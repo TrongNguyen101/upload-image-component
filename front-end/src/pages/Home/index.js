@@ -20,7 +20,9 @@ function HomePage() {
         </Button>
       </div>
       <div>
-        <Button variant="contained" onClick={handleImageUploaded}>Image Uploaded</Button>
+        <Button variant="contained" onClick={handleImageUploaded}>
+          Image Uploaded
+        </Button>
       </div>
     </div>
   );
