@@ -7,18 +7,43 @@ function UploadImagePage() {
   const navigate = useNavigate();
   const [seleactedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [error, setError] = useState("");
   const formData = new FormData();
   formData.append("image", seleactedFile);
 
   const fetchUpload = async () => {
     const data = await UploadService.postFile(formData);
-    return data;
+    if (data.status === 200) {
+      alert("Upload successful");
+    } else {
+      alert("Upload failed");
+    }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-    setPreview(URL.createObjectURL(file));
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.type.startsWith("image/")) {
+        try {
+          setSelectedFile(file);
+          setPreview(URL.createObjectURL(file));
+          setError("");
+        } catch (err) {
+          setSelectedFile(null);
+          setPreview(null);
+          setError("Failed to preview image. Please try again.");
+          console.error("Preview error:", err);
+        }
+      } else {
+        setSelectedFile(null);
+        setPreview(null);
+        setError("Invalid file type. Please select an image.");
+      }
+    } else {
+      setSelectedFile(null);
+      setPreview(null);
+      setError("No file selected.");
+    }
   };
 
   const handleUpload = () => {
@@ -69,6 +94,7 @@ function UploadImagePage() {
         {preview && (
           <img src={preview} alt="preview" style={{ width: "100px" }} />
         )}
+        {error && <div style={{ color: "red" }}>{error}</div>}
       </div>
     </div>
   );
