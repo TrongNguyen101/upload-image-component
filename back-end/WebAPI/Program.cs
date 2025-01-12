@@ -23,6 +23,8 @@ app.UseCors(cors => cors
     .AllowAnyHeader()
 );
 
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

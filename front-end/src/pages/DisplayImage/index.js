@@ -1,20 +1,32 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as TestService from "../../services/TestService";
+import * as LoadImageService from "../../services/LoadImageService";
 
-function ImagePage() {
+function ImageLoader() {
   let navigate = useNavigate();
+  const [imageSrc, setImageSrc] = useState("");
+  const [fileName, setFileName] = useState("");
 
-  const [weather, setWeather] = useState([]);
-
-  const fetchWeather = async () => {
-    const data = await TestService.getWeather();
-    setWeather(data);
+  const fetchImage = async () => {
+    const image = await LoadImageService.loadImage(fileName);
+    if (image.status === 200) {
+      const url = URL.createObjectURL(image.data);
+      setImageSrc(url);
+    } else {
+      setImageSrc(null);
+      alert("Failed to load image");
+    }
   };
 
-  const handleRequest = () => {
-    fetchWeather();
+  const handleLoadImage = () => {
+    if (!fileName) {
+      alert("Please enter a file name first");
+      return;
+    }
+    else{
+      fetchImage();
+    }
   };
 
   const handleBackHome = () => {
@@ -24,27 +36,40 @@ function ImagePage() {
   return (
     <div>
       <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
-        <Button variant="contained" onClick={handleRequest}>
-          request api
+        <div
+          style={{
+            width: "380px",
+            display: "flex",
+            alignItems: "center",
+            borderRadius: "5px",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Enter image file name (e.g., image.jpg)"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+            style={{ width: "100%", height : "100%" }}
+          />
+        </div>
+        <Button variant="contained" onClick={handleLoadImage}>
+          load image
         </Button>
         <Button variant="contained" onClick={handleBackHome}>
-          back home
+          back to home
         </Button>
       </div>
       <div>
-        <ul>
-          {weather.map((item, key) => (
-            <li key={key}>
-              <p>Date: {item.date}</p>
-              <p>Temperature C: {item.temperatureC}</p>
-              <p>Temperature F: {item.temperatureF}</p>
-              <p>Summary: {item.summary}</p>
-            </li>
-          ))}
-        </ul>
+        {imageSrc && (
+          <img
+            src={imageSrc}
+            alt="Loaded"
+            style={{ width: "300px", marginTop: "10px" }}
+          />
+        )}
       </div>
     </div>
   );
 }
 
-export default ImagePage;
+export default ImageLoader;
