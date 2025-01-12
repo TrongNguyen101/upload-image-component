@@ -11,10 +11,11 @@ public class LoadImageController : ControllerBase
 
         if (!System.IO.File.Exists(imagePath))
         {
-            return NotFound("Image not found.");
+            return NotFound(new { message = $"Image '{fileName}' not found." });
         }
 
         var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+
         return File(imageBytes, "image/jpeg");
     }
 }

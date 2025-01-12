@@ -12,9 +12,9 @@ function UploadImagePage() {
   formData.append("image", seleactedFile);
 
   const fetchUpload = async () => {
-    const data = await UploadService.postFile(formData);
-    if (data.status === 200) {
-      alert("Upload successful");
+    const response = await UploadService.postFile(formData);
+    if (response.status === 200) {
+      alert(response.data);
     } else {
       alert("Upload failed");
     }
@@ -32,7 +32,6 @@ function UploadImagePage() {
           setSelectedFile(null);
           setPreview(null);
           setError("Failed to preview image. Please try again.");
-          console.error("Preview error:", err);
         }
       } else {
         setSelectedFile(null);

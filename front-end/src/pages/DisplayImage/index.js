@@ -7,15 +7,18 @@ function ImageLoader() {
   let navigate = useNavigate();
   const [imageSrc, setImageSrc] = useState("");
   const [fileName, setFileName] = useState("");
+  const [error, setError] = useState("");
 
   const fetchImage = async () => {
-    const image = await LoadImageService.loadImage(fileName);
-    if (image.status === 200) {
-      const url = URL.createObjectURL(image.data);
+    const response = await LoadImageService.loadImage(fileName);
+    if (response.status === 200) {
+      const url = URL.createObjectURL(response.data);
       setImageSrc(url);
-    } else {
+      setError("");
+    }
+    if (response.status === 404) {
       setImageSrc(null);
-      alert("Failed to load image");
+      setError("Image not found");
     }
   };
 
@@ -23,8 +26,7 @@ function ImageLoader() {
     if (!fileName) {
       alert("Please enter a file name first");
       return;
-    }
-    else{
+    } else {
       fetchImage();
     }
   };
@@ -49,7 +51,7 @@ function ImageLoader() {
             placeholder="Enter image file name (e.g., image.jpg)"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
-            style={{ width: "100%", height : "100%" }}
+            style={{ width: "100%", height: "100%" }}
           />
         </div>
         <Button variant="contained" onClick={handleLoadImage}>
@@ -67,6 +69,7 @@ function ImageLoader() {
             style={{ width: "300px", marginTop: "10px" }}
           />
         )}
+        {error && <div style={{ color: "red" }}>{error}</div>}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ export const loadImage = async (fileName) => {
     });
     return response;
   } catch (error) {
-    return console.log(error);
+    console.log(error.response);
+    return error.response;
   }
 };
